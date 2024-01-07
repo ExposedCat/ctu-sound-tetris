@@ -22,6 +22,7 @@ class Brick {
     bool side_collides(int side);  // -1 = left, 1 = right
     int get_actual_y(Point point);
     void move_x(int dir);
+    void freeze();
 
    private:
     rgb_t color = random_color(25);

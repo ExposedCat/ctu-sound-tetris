@@ -111,30 +111,30 @@ error_type_t Controller::do_process(audio_buffer_t& buffer) {
         return error_type_t::ok;
     }
     vector<vector<int>> filled_points = create_matrix();
-    int erased_lines = check_complete_line(filled_points);
+    // int erased_lines = check_complete_line(filled_points);
     check_gameover(filled_points);
-    // TODO: Move to separate method
-    data->score.points += erased_lines;
-    data->speed += 0.5 * erased_lines;
-    if (erased_lines) {
-        printf("[Score] %d -> %d %s\n", data->score.points - erased_lines,
-               data->score.points,
-               data->score.points > 9
-                   ? "☠️"
-                   : (data->score.points > 8
-                          ? "😱"
-                          : (data->score.points > 7
-                                 ? "😨"
-                                 : (data->score.points > 6
-                                        ? "🤯"
-                                        : (data->score.points > 5
-                                               ? "😳"
-                                               : (data->score.points > 4
-                                                      ? "😎"
-                                                      : (data->score.points > 3
-                                                             ? "🙂"
-                                                             : "")))))));
-    }
+    // // TODO: Move to separate method
+    // data->score.points += erased_lines;
+    // data->speed += 0.5 * erased_lines;
+    // if (erased_lines) {
+    //     printf("[Score] %d -> %d %s\n", data->score.points - erased_lines,
+    //            data->score.points,
+    //            data->score.points > 9
+    //                ? "☠️"
+    //                : (data->score.points > 8
+    //                       ? "😱"
+    //                       : (data->score.points > 7
+    //                              ? "😨"
+    //                              : (data->score.points > 6
+    //                                     ? "🤯"
+    //                                     : (data->score.points > 5
+    //                                            ? "😳"
+    //                                            : (data->score.points > 4
+    //                                                   ? "😎"
+    //                                                   : (data->score.points > 3
+    //                                                          ? "🙂"
+    //                                                          : "")))))));
+    // }
     redraw_screen();
 
     for (auto sample : buffer.data) {

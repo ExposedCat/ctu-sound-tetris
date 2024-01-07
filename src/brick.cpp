@@ -2,12 +2,25 @@
 
 #include "main.h"
 
+const int variations = 2;
+const vector<vector<Point>> possible_bricks = {
+    {{0, -1}, {-1, 0}, {0, 0}, {1, 0}},  // T
+    {{0, -1}, {0, 0}, {1, -1}, {1, 0}},  // Square
+};
+
 Brick::Brick(SharedData* data) : data(data), creation_time(data->time) {
     // TODO: Add more complicated shapes
     int center =
         ((int)(data->window.width / data->window.brick_width) / 2 - 1) *
         data->window.brick_width;
-    points.push_back({center, 0});
+
+    vector<Point> new_points = possible_bricks[random_int(0, variations - 1)];
+    for (int i = 0; i < 4; ++i) {
+        new_points[i].x *= data->window.brick_width;
+        new_points[i].x += center;
+        new_points[i].y *= data->window.brick_height;
+    }
+    points = new_points;
 }
 
 int Brick::get_actual_y(Point point) {
@@ -30,6 +43,13 @@ void Brick::draw(video_buffer_t* video_buffer) {
     }
 }
 
+void Brick::freeze() {
+    for (auto& point : points) {
+        point.y = get_actual_y(point);
+    }
+    active = false;
+}
+
 bool Brick::bottom_collides() {
     for (auto brick : data->bricks) {
         if (brick->active) {
@@ -43,20 +63,23 @@ bool Brick::bottom_collides() {
                 }
                 int current_y = get_actual_y(current_point);
                 if (current_y == y - data->window.brick_height) {
-                    active = false;
-                    current_point.y = current_y;
+                    freeze();
                     return true;
                 }
             }
         }
     }
+    bool collides = false;
     for (auto& point : points) {
         int y = get_actual_y(point);
         if (y == data->window.height - data->window.brick_height) {
-            active = false;
-            point.y = y;
-            return true;
+            collides = true;
+            break;
         }
+    }
+    if (collides) {
+        freeze();
+        return true;
     }
     return false;
 }

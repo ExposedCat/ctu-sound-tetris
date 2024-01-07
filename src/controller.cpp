@@ -26,41 +26,53 @@ void Controller::redraw_screen() {
     blit(video_buffer);
 };
 
-void Controller::check_complete_line(){
-    std::vector<std::vector<int>> idx(20, std::vector<int>(10, 0));
+int Controller::check_complete_line() {
+    vector<vector<int>> filled_points(data->window.rows,
+                                      vector<int>(data->window.columns, 0));
     for (auto brick : data->bricks) {
         if (!brick->active) {
             for (auto point : brick->points) {
-                int index_r = (brick->get_actual_y(point) / data->window.brick_height);
-                int index_c = (point.x / data->window.brick_width);
-                idx[index_r][index_c] = 1;
+                int row =
+                    (brick->get_actual_y(point) / data->window.brick_height);
+                int column = point.x / data->window.brick_width;
+                filled_points[row][column] = 1;
             }
         }
     }
-    
-    for (int i = 0; i < idx.size(); i++) {
-        int sum_of_elems = 0;
-        for (auto& n : idx[i])
-            sum_of_elems += n;
-        if (sum_of_elems == data->window.columns) {
-            for (auto brick : data->bricks) {
-                if (!brick->active) {
-                    for (auto it = brick->points.begin(); it != brick->points.end();) {
-                        auto& point = *it;
-                        int index_r = (brick->get_actual_y(point) / data->window.brick_height);
-                        if (index_r == i) {
-                            it = brick->points.erase(it);
-                        } else {
-                            if (index_r < i){
-                                point.y += data->window.brick_height;
-                            }
-                            ++it;
-                        }
+
+    int erased = 0;
+
+    for (int y = 0; y < filled_points.size(); y++) {
+        int filled_number = 0;
+        for (auto is_filled : filled_points[y]) {
+            filled_number += is_filled;
+        };
+        if (filled_number != data->window.columns) {
+            continue;
+        }
+        erased += 1;
+        for (auto brick : data->bricks) {
+            if (brick->active) {
+                continue;
+            }
+            for (auto iterator = brick->points.begin();
+                 iterator != brick->points.end();) {
+                auto& point = *iterator;
+                int row =
+                    brick->get_actual_y(point) / data->window.brick_height;
+                if (row == y) {
+                    iterator = brick->points.erase(iterator);
+                } else {
+                    if (row < y) {
+                        point.y += data->window.brick_height;
                     }
+                    iterator += 1;
                 }
             }
         }
     }
+
+    return erased;
 }
 
 Brick* Controller::ensure_active_brick() {
@@ -84,7 +96,29 @@ error_type_t Controller::do_process(audio_buffer_t& buffer) {
     if (is_stopped()) {
         return error_type_t::failed;
     }
-    check_complete_line();
+    int erased_lines = check_complete_line();
+    // TODO: Move to separate method
+    data->score.points += erased_lines;
+    data->speed += 0.5 * erased_lines;
+    if (erased_lines) {
+        printf("[Score] %d -> %d %s\n", data->score.points - erased_lines,
+               data->score.points,
+               data->score.points > 9
+                   ? "☠️"
+                   : (data->score.points > 8
+                          ? "😱"
+                          : (data->score.points > 7
+                                 ? "😨"
+                                 : (data->score.points > 6
+                                        ? "🤯"
+                                        : (data->score.points > 5
+                                               ? "😳"
+                                               : (data->score.points > 4
+                                                      ? "😎"
+                                                      : (data->score.points > 3
+                                                             ? "🙂"
+                                                             : "")))))));
+    }
     redraw_screen();
 
     for (auto sample : buffer.data) {

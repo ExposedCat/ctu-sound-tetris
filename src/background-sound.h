@@ -1,3 +1,6 @@
+#ifndef BACKGROUND_SOUND_H
+#define BACKGROUND_SOUND_H
+
 #include "main.h"
 
 class BackgroundSound : public AudioFilter {
@@ -12,3 +15,5 @@ class BackgroundSound : public AudioFilter {
     double frequencies[10] = {440, 523.25, 587.33, 659.25, 783.99,
                               880, 783.99, 659.25, 587.33, 523.25};
 };
+
+#endif

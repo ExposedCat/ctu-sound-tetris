@@ -48,6 +48,7 @@ class Brick;
 typedef struct SharedData {
     WindowData window;
     Score score;
+    bool gameover;
     double speed;
     double time;
     double time_step;

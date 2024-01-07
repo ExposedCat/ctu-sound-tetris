@@ -26,7 +26,7 @@ void Controller::redraw_screen() {
     blit(video_buffer);
 };
 
-int Controller::check_complete_line() {
+vector<vector<int>> Controller::create_matrix(){
     vector<vector<int>> filled_points(data->window.rows,
                                       vector<int>(data->window.columns, 0));
     for (auto brick : data->bricks) {
@@ -39,7 +39,19 @@ int Controller::check_complete_line() {
             }
         }
     }
+    return filled_points;
+}
 
+void Controller::check_gameover(vector<vector<int>> filled_points){
+    for (auto is_filled : filled_points[0]) {
+        if(is_filled){
+            printf("Game Over!\n");
+            data->gameover = true;
+        }
+    };
+}
+
+int Controller::check_complete_line(vector<vector<int>> filled_points) {
     int erased = 0;
 
     for (int y = 0; y < filled_points.size(); y++) {
@@ -71,7 +83,6 @@ int Controller::check_complete_line() {
             }
         }
     }
-
     return erased;
 }
 
@@ -96,7 +107,12 @@ error_type_t Controller::do_process(audio_buffer_t& buffer) {
     if (is_stopped()) {
         return error_type_t::failed;
     }
-    int erased_lines = check_complete_line();
+    if (data->gameover){
+        return error_type_t::ok;
+    }
+    vector<vector<int>> filled_points = create_matrix();
+    int erased_lines = check_complete_line(filled_points);
+    check_gameover(filled_points);
     // TODO: Move to separate method
     data->score.points += erased_lines;
     data->speed += 0.5 * erased_lines;
@@ -148,6 +164,5 @@ bool Controller::do_key_pressed(const int key, bool pressed) {
             break;
         }
     }
-
     return true;
 }

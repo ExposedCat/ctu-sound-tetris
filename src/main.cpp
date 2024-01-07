@@ -22,7 +22,9 @@ int main(int argc, char** argv) try {
     Score score;
     score.points = 0;
 
+
     SharedData shared_data;
+    shared_data.gameover = false;
     shared_data.window = window;
     shared_data.time = 0.0;
     shared_data.time_step =

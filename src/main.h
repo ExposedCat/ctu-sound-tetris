@@ -27,7 +27,7 @@ typedef struct SharedData {
     double speed;
     double time;
     double time_step;
-    vector<Brick> bricks;
+    vector<Brick*> bricks;
 } SharedData;
 
 typedef struct WindowData {

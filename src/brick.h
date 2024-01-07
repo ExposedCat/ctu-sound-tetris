@@ -12,11 +12,12 @@ class Brick {
     Brick(double creation_time);
     bool active = true;
 
-    void draw(video_buffer_t* video_buffer);
+    void draw(video_buffer_t* video_buffer, double time);
+    void move_x(int dir);
 
    private:
-    vector<rectangle_t> rectangles = {};
     rgb_t color = random_color(25);
+    vector<vector<int>> rectangles_coords = {};
     double creation_time;
 };
 

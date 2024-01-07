@@ -18,7 +18,7 @@ int main(int argc, char** argv) try {
     shared_data.time = 0.0;
     shared_data.time_step =
         1.0 / convert_rate_to_int(sampling_rate_t::rate_44kHz);
-    shared_data.speed = 1.0;
+    shared_data.speed = 5.0;
     shared_data.bricks = {};
 
     auto sink = iimavlib::filter_chain<BackgroundSound>(&shared_data)

@@ -30,7 +30,7 @@ int main(int argc, char** argv) try {
 
     auto sink = iimavlib::filter_chain<BackgroundSound>(&shared_data)
                     .add<Controller>(&shared_data)
-                    .add<BrickSound>(&shared_data)
+                    //.add<BrickSound>(&shared_data)
                     .add<iimavlib::PlatformSink>(device_id)
                     .sink();
 

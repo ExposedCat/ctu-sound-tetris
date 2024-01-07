@@ -26,6 +26,43 @@ void Controller::redraw_screen() {
     blit(video_buffer);
 };
 
+void Controller::check_complete_line(){
+    std::vector<std::vector<int>> idx(20, std::vector<int>(10, 0));
+    for (auto brick : data->bricks) {
+        if (!brick->active) {
+            for (auto point : brick->points) {
+                int index_r = (brick->get_actual_y(point) / data->window.brick_height);
+                int index_c = (point.x / data->window.brick_width);
+                idx[index_r][index_c] = 1;
+            }
+        }
+    }
+    
+    for (int i = 0; i < idx.size(); i++) {
+        int sum_of_elems = 0;
+        for (auto& n : idx[i])
+            sum_of_elems += n;
+        if (sum_of_elems == data->window.columns) {
+            for (auto brick : data->bricks) {
+                if (!brick->active) {
+                    for (auto it = brick->points.begin(); it != brick->points.end();) {
+                        auto& point = *it;
+                        int index_r = (brick->get_actual_y(point) / data->window.brick_height);
+                        if (index_r == i) {
+                            it = brick->points.erase(it);
+                        } else {
+                            if (index_r < i){
+                                point.y += data->window.brick_height;
+                            }
+                            ++it;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 Brick* Controller::ensure_active_brick() {
     bool active_found = false;
     Brick* active_brick;
@@ -47,6 +84,7 @@ error_type_t Controller::do_process(audio_buffer_t& buffer) {
     if (is_stopped()) {
         return error_type_t::failed;
     }
+    check_complete_line();
     redraw_screen();
 
     for (auto sample : buffer.data) {

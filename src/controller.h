@@ -17,6 +17,8 @@ class Controller : public SDLDevice, public AudioFilter {
 
   error_type_t do_process(audio_buffer_t& buffer) override;
 
+  void check_complete_line();
+  
   Brick* ensure_active_brick();
 
   bool do_key_pressed(const int key, bool pressed) override;

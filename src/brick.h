@@ -13,6 +13,7 @@ class Point;
 class Brick {
    public:
     Brick(SharedData* shared_data);
+    vector<Point> points = {};
     bool active = true;
     double creation_time;
 
@@ -24,7 +25,6 @@ class Brick {
 
    private:
     rgb_t color = random_color(25);
-    vector<Point> points = {};
     SharedData* data;
 };
 

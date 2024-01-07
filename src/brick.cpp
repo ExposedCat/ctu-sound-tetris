@@ -2,19 +2,22 @@
 
 #include "main.h"
 
-const int variations = 2;
+const int variations = 5;
 const vector<vector<Point>> possible_bricks = {
-    {{0, -1}, {-1, 0}, {0, 0}, {1, 0}},  // T
-    {{0, -1}, {0, 0}, {1, -1}, {1, 0}},  // Square
+    {{1, 1}, {-1, 1}, {0, 1}, {2, 1}},   // --
+    {{0, 1}, {-1, 0}, {-1, 1}, {1, 1}},  // -^
+    {{0, 1}, {1, 0}, {-1, 1}, {1, 1}},   // ^-
+    {{1, 1}, {0, 0}, {1, 0}, {0, 1}},     // Square
+    {{0, 1}, {-1, 1}, {0, 0}, {1, 0}},     // _^-
+    {{0, 1}, {0, 0}, {-1, 1}, {1, 1}},   // T
+    {{0, 1}, {0, 0}, {-1, 0}, {1, 1}}     // -|_
 };
 
 Brick::Brick(SharedData* data) : data(data), creation_time(data->time) {
     // TODO: Add more complicated shapes
-    int center =
-        ((int)(data->window.width / data->window.brick_width) / 2 - 1) *
-        data->window.brick_width;
+    int center = (data->window.columns / 2 - 1) * data->window.brick_width;
 
-    vector<Point> new_points = possible_bricks[random_int(0, variations - 1)];
+    vector<Point> new_points = possible_bricks[Utils::random_int(0, variations - 1)];
     for (int i = 0; i < 4; ++i) {
         new_points[i].x *= data->window.brick_width;
         new_points[i].x += center;
@@ -29,7 +32,7 @@ int Brick::get_actual_y(Point point) {
     }
     int shift = (int)(data->time - creation_time) * data->window.brick_height;
     if (shift + point.y >= data->window.height - data->window.brick_height) {
-        shift = data->window.height - data->window.brick_height;
+        return data->window.height - data->window.brick_height;
     }
     return point.y + shift;
 }
@@ -40,6 +43,22 @@ void Brick::draw(video_buffer_t* video_buffer) {
                                  data->window.brick_width,
                                  data->window.brick_height};
         draw_rectangle(*video_buffer, rectangle, color);
+    }
+}
+
+void Brick::rotate() {
+    int centerX = 0, centerY = 0;
+    for (auto& point : points) {
+        centerX += point.x;
+        centerY += point.y;
+    }
+    Point center = points[0];
+
+    for (auto& point : points) {
+        int newX = center.y - point.y + center.x;
+        int newY = point.x - center.x + center.y;
+        point.x = newX;
+        point.y = newY;
     }
 }
 

@@ -23,9 +23,11 @@ class Brick {
     int get_actual_y(Point point);
     void move_x(int dir);
     void freeze();
+    void rotate();
 
    private:
-    rgb_t color = random_color(25);
+    int form = 0;
+    rgb_t color = Utils::random_color(25);
     SharedData* data;
 };
 

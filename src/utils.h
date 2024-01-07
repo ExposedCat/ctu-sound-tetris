@@ -1,15 +1,21 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include <random>
-
 #include <iimavlib/video_ops.h>
+
+#include <random>
 
 using namespace std;
 using namespace iimavlib;
 
-int random_int(int min, int max);
+class Utils {
+   public:
+    static random_device rd;
+    static mt19937 gen;
 
-rgb_t random_color(int min = 25, int max = 255);
+    static int random_int(int min, int max);
+
+    static rgb_t random_color(int min = 25, int max = 255);
+};
 
 #endif

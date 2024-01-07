@@ -23,6 +23,11 @@ const int KEY_ARROW_LEFT = 276;
 const int KEY_ARROW_RIGHT = 275;
 }  // namespace
 
+typedef struct Point {
+    int x;
+    int y;
+} Point;
+
 typedef struct WindowData {
     int width;
     int height;

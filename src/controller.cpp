@@ -20,7 +20,7 @@ void Controller::redraw_screen() {
     ensure_active_brick();
 
     for (auto brick : data->bricks) {
-        brick->draw(&video_buffer, data->time);
+        brick->draw(&video_buffer);
     }
 
     blit(video_buffer);
@@ -36,7 +36,7 @@ Brick* Controller::ensure_active_brick() {
             break;
         }
     }
-    if (!active_found) {
+    if (!active_found || active_brick->bottom_collides()) {
         active_brick = new Brick(data);
         data->bricks.push_back(active_brick);
     }

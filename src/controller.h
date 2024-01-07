@@ -12,12 +12,14 @@ class Controller : public SDLDevice, public AudioFilter {
    private:
     WindowData window;
     SharedData* data;
-    iimavlib::video_buffer_t data_;
+    video_buffer_t video_buffer;
 
   void draw_sequence();
 
   error_type_t do_process(audio_buffer_t& buffer) override;
-  
+
+  Brick get_active_brick();
+
   bool do_key_pressed(const int key, bool pressed) override;
 };
 

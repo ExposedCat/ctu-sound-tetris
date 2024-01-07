@@ -9,12 +9,15 @@ using namespace iimavlib;
 
 class Brick {
    public:
-    Brick();
+    Brick(double creation_time);
+    bool active = true;
+
+    void draw(video_buffer_t* video_buffer);
 
    private:
     vector<rectangle_t> rectangles = {};
     rgb_t color = random_color(25);
-    bool active = true;
+    double creation_time;
 };
 
 #endif

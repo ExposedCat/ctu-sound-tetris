@@ -48,6 +48,10 @@ error_type_t Controller::do_process(audio_buffer_t& buffer) {
         return error_type_t::failed;
     }
     redraw_screen();
+
+    for (auto sample : buffer.data) {
+        data->time += data->time_step * data->speed;
+    }
     return error_type_t::ok;
 }
 

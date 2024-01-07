@@ -16,7 +16,8 @@ using namespace std;
 using namespace iimavlib;
 
 namespace {
-const double max_amplitude = 255.0 / 2;
+const double bit8_amplitude = 255.0 / 2;
+const double amplitude = numeric_limits<int16_t>::max();
 
 const int KEY_ARROW_LEFT = 276;
 
@@ -45,8 +46,8 @@ typedef struct SharedData {
     double time;
     double time_step;
     vector<Brick*> bricks;
-
     double last_move_time;
+    double frequency;
 } SharedData;
 
 #endif

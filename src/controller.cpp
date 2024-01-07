@@ -1,26 +1,32 @@
 #include "controller.h"
 
-Controller::Controller(const pAudioFilter& child, WindowData window,
-                       SharedData* data)
-    : SDLDevice(window.width, window.height,
+Controller::Controller(const pAudioFilter& child, SharedData* data)
+    : SDLDevice(data->window.width, data->window.height,
                 "Sound Tetris by Chipi & Chapa Corp."),
       AudioFilter(child),
-      window(window),
       data(data),
-      video_buffer(window.width, window.height) {
+      video_buffer(data->window.width, data->window.height) {
     start();
 };
 
 Controller::~Controller() { stop(); };
 
-void Controller::draw_sequence() {
-    draw_rectangle(video_buffer, {0, 0, video_buffer.size.width, video_buffer.size.height}, {0, 0, 0});
-    Brick* active_brick = get_active_brick();
-    active_brick->draw(&video_buffer, data->time);
+void Controller::redraw_screen() {
+    // Clear screen - draw a fullscreen black rectangle
+    draw_rectangle(video_buffer,
+                   {0, 0, video_buffer.size.width, video_buffer.size.height},
+                   {0, 0, 0});
+
+    ensure_active_brick();
+
+    for (auto brick : data->bricks) {
+        brick->draw(&video_buffer, data->time);
+    }
+
     blit(video_buffer);
 };
 
-Brick* Controller::get_active_brick() {
+Brick* Controller::ensure_active_brick() {
     bool active_found = false;
     Brick* active_brick;
     for (auto brick : data->bricks) {
@@ -31,7 +37,7 @@ Brick* Controller::get_active_brick() {
         }
     }
     if (!active_found) {
-        active_brick = new Brick(data->time);
+        active_brick = new Brick(data);
         data->bricks.push_back(active_brick);
     }
     return active_brick;
@@ -41,7 +47,7 @@ error_type_t Controller::do_process(audio_buffer_t& buffer) {
     if (is_stopped()) {
         return error_type_t::failed;
     }
-    draw_sequence();
+    redraw_screen();
     return error_type_t::ok;
 }
 
@@ -54,12 +60,12 @@ bool Controller::do_key_pressed(const int key, bool pressed) {
             return false;
         }
         case KEY_ARROW_LEFT: {
-            Brick* active_brick = get_active_brick();
+            Brick* active_brick = ensure_active_brick();
             active_brick->move_x(-1);
             break;
         }
         case KEY_ARROW_RIGHT: {
-            Brick* active_brick = get_active_brick();
+            Brick* active_brick = ensure_active_brick();
             active_brick->move_x(1);
             break;
         }

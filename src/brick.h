@@ -1,15 +1,16 @@
 #ifndef BRICK_H
 #define BRICK_H
 
-#include <iimavlib/video_ops.h>
-
+#include "main.h"
 #include "utils.h"
 
 using namespace iimavlib;
 
+class SharedData;
+
 class Brick {
    public:
-    Brick(double creation_time);
+    Brick(SharedData* shared_data);
     bool active = true;
 
     void draw(video_buffer_t* video_buffer, double time);
@@ -19,6 +20,7 @@ class Brick {
     rgb_t color = random_color(25);
     vector<vector<int>> rectangles_coords = {};
     double creation_time;
+    SharedData* data;
 };
 
 #endif

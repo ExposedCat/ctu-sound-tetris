@@ -13,16 +13,21 @@ int main(int argc, char** argv) try {
     WindowData window;
     window.width = 500;
     window.height = 1000;
+    window.rows = 20;
+    window.columns = 10;
+    window.brick_width = window.width / window.columns;
+    window.brick_height = window.height / window.rows;
 
     SharedData shared_data;
+    shared_data.window = window;
     shared_data.time = 0.0;
     shared_data.time_step =
         1.0 / convert_rate_to_int(sampling_rate_t::rate_44kHz);
-    shared_data.speed = 5.0;
+    shared_data.speed = 1.0;
     shared_data.bricks = {};
 
     auto sink = iimavlib::filter_chain<BackgroundSound>(&shared_data)
-                    .add<Controller>(window, &shared_data)
+                    .add<Controller>(&shared_data)
                     .add<iimavlib::PlatformSink>(device_id)
                     .sink();
 

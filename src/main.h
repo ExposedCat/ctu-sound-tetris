@@ -23,17 +23,23 @@ const int KEY_ARROW_LEFT = 276;
 const int KEY_ARROW_RIGHT = 275;
 }  // namespace
 
+typedef struct WindowData {
+    int width;
+    int height;
+    int rows;
+    int columns;
+    int brick_width;
+    int brick_height;
+} WindowData;
+
+class Brick;
+
 typedef struct SharedData {
+    WindowData window;
     double speed;
     double time;
     double time_step;
     vector<Brick*> bricks;
 } SharedData;
-
-typedef struct WindowData {
-    int width;
-    int columns;
-    int height;
-} WindowData;
 
 #endif

@@ -18,6 +18,7 @@ class Brick {
 
     void draw(video_buffer_t* video_buffer);
     bool bottom_collides();
+    bool side_collides(int side);  // -1 = left, 1 = right
     int get_actual_y(Point point);
     void move_x(int dir);
 

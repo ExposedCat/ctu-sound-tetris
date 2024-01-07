@@ -61,16 +61,38 @@ bool Brick::bottom_collides() {
     return false;
 }
 
-void Brick::move_x(int dir) {
-    if (!active) {
-        return;
-    }
-    for (auto& point : points) {
-        if (point.x == 0 && dir == -1 ||
-            point.x == data->window.width - data->window.brick_width &&
-                dir == 1) {
-            return;
+bool Brick::side_collides(int side) {
+    for (auto brick : data->bricks) {
+        if (brick->active) {
+            continue;
         }
+        for (auto point : brick->points) {
+            int y = brick->get_actual_y(point);
+            for (auto current_point : points) {
+                int current_y = get_actual_y(current_point);
+                if (current_y != y) {
+                    continue;
+                }
+                if (current_point.x ==
+                    point.x - data->window.brick_width * side) {
+                    return true;
+                }
+            }
+        }
+    }
+    for (auto point : points) {
+        if (point.x == 0 && side == -1 ||
+            point.x == data->window.width - data->window.brick_width &&
+                side == 1) {
+            return true;
+        }
+    }
+    return false;
+}
+
+void Brick::move_x(int dir) {
+    if (!active || side_collides(dir)) {
+        return;
     }
     for (auto& point : points) {
         int width = data->window.width / data->window.columns;

@@ -61,11 +61,13 @@ bool Controller::do_key_pressed(const int key, bool pressed) {
         }
         case KEY_ARROW_LEFT: {
             Brick* active_brick = ensure_active_brick();
+            data->brick_moved = true;
             active_brick->move_x(-1);
             break;
         }
         case KEY_ARROW_RIGHT: {
             Brick* active_brick = ensure_active_brick();
+            data->brick_moved = true;
             active_brick->move_x(1);
             break;
         }

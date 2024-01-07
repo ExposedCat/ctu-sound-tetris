@@ -40,6 +40,8 @@ typedef struct SharedData {
     double time;
     double time_step;
     vector<Brick*> bricks;
+
+    bool brick_moved;
 } SharedData;
 
 #endif

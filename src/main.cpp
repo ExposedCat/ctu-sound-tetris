@@ -1,6 +1,7 @@
 #include "main.h"
 
 #include "background-sound.h"
+#include "brick-sound.h"
 #include "controller.h"
 
 int main(int argc, char** argv) try {
@@ -25,9 +26,11 @@ int main(int argc, char** argv) try {
         1.0 / convert_rate_to_int(sampling_rate_t::rate_44kHz);
     shared_data.speed = 1.0;
     shared_data.bricks = {};
+    shared_data.brick_moved = false;
 
     auto sink = iimavlib::filter_chain<BackgroundSound>(&shared_data)
                     .add<Controller>(&shared_data)
+                    .add<BrickSound>(&shared_data)    
                     .add<iimavlib::PlatformSink>(device_id)
                     .sink();
 

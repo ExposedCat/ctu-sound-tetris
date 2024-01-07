@@ -98,5 +98,4 @@ void Brick::move_x(int dir) {
         int width = data->window.width / data->window.columns;
         point.x += width * dir;
     }
-    data->brick_moved = false;
 }

@@ -38,10 +38,16 @@ typedef struct WindowData {
     int brick_height;
 } WindowData;
 
+typedef struct Score {
+    int points;
+} Score;
+
+// Hack for cyclic dependencies
 class Brick;
 
 typedef struct SharedData {
     WindowData window;
+    Score score;
     double speed;
     double time;
     double time_step;

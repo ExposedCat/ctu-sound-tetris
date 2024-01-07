@@ -8,6 +8,24 @@ Brick::Brick(SharedData* data) : data(data), creation_time(data->time) {
         ((int)(data->window.width / data->window.brick_width) / 2 - 1) *
         data->window.brick_width;
     points.push_back({center, 0});
+    data->score.points += 1;
+    data->speed += 0.5;
+    printf("[Score] %d %s\n", data->score.points,
+           data->score.points > 9
+               ? "☠️"
+               : (data->score.points > 8
+                      ? "😱"
+                      : (data->score.points > 7
+                             ? "😨"
+                             : (data->score.points > 6
+                                    ? "🤯"
+                                    : (data->score.points > 5
+                                           ? "😳"
+                                           : (data->score.points > 4
+                                                  ? "😎"
+                                                  : (data->score.points > 3
+                                                         ? "🙂"
+                                                         : "")))))));
 }
 
 int Brick::get_actual_y(Point point) {

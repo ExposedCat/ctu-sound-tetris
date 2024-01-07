@@ -19,6 +19,9 @@ int main(int argc, char** argv) try {
     window.brick_width = window.width / window.columns;
     window.brick_height = window.height / window.rows;
 
+    Score score;
+    score.points = 0;
+
     SharedData shared_data;
     shared_data.window = window;
     shared_data.time = 0.0;
@@ -27,6 +30,7 @@ int main(int argc, char** argv) try {
     shared_data.speed = 2.0;
     shared_data.bricks = {};
     shared_data.last_move_time = -1;
+    shared_data.score = score;
 
     auto sink = iimavlib::filter_chain<BackgroundSound>(&shared_data)
                     .add<Controller>(&shared_data)

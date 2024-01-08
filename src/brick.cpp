@@ -58,6 +58,27 @@ void Brick::rotate() {
     for (auto& point : points) {
         int newX = center.y - point.y + center.x;
         int newY = point.x - center.x + center.y;
+        int actualY = get_actual_y({newX, newY});
+        if (newX < 0 || newX >= data->window.width || actualY < 0 ||
+            actualY >= data->window.height) {
+            return;
+        }
+        for (auto brick : data->bricks) {
+            if (brick->active) {
+                continue;
+            }
+            for (auto remote_point : brick->points) {
+                int actual_remote_y = brick->get_actual_y(remote_point);
+                if (remote_point.x == newX && remote_point.y == actualY) {
+                    return;
+                }
+            }
+        }
+    }
+
+    for (auto& point : points) {
+        int newX = center.y - point.y + center.x;
+        int newY = point.x - center.x + center.y;
         point.x = newX;
         point.y = newY;
     }

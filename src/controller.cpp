@@ -83,14 +83,12 @@ int Controller::clear_complete_lines() {
         }
         if (brick->points.size() == 0) {
             bit = data->bricks.erase(bit);
-            printf("Erased whole brick\n");
         } else {
             bit += 1;
         }
     }
 
     while (true) {
-        printf("Falling cycle\n");
         bool stable = true;
         for (auto brick : data->bricks) {
             if (brick->active) {
@@ -98,7 +96,6 @@ int Controller::clear_complete_lines() {
             }
             if (!brick->bottom_collides()) {
                 stable = false;
-                printf("Found unstable brick\n");
                 brick->fall();
             }
         }

@@ -14,6 +14,7 @@ class BackgroundSound : public AudioFilter {
     SharedData* data;
     double frequencies[10] = {440, 523.25, 587.33, 659.25, 783.99,
                               880, 783.99, 659.25, 587.33, 523.25};
+    double game_over_frequencies[6] = {200.0, 200.0, 100.0, 100.0, 50.0, 50.0};
 };
 
 #endif

@@ -17,10 +17,48 @@ void Controller::redraw_screen() {
                    {0, 0, video_buffer.size.width, video_buffer.size.height},
                    {0, 0, 0});
 
-    ensure_active_brick();
-
-    for (auto brick : data->bricks) {
-        brick->draw(&video_buffer);
+    if (!data->gameover) {
+        ensure_active_brick();
+        for (auto brick : data->bricks) {
+            brick->draw(&video_buffer);
+        }
+    } else {
+        // Rainbow cross
+        draw_rectangle(video_buffer, {0, 0, 100, 100}, Utils::random_color());
+        draw_rectangle(video_buffer, {0, 100, 100, 100}, Utils::random_color());
+        draw_rectangle(video_buffer, {0, 900, 100, 100}, Utils::random_color());
+        draw_rectangle(video_buffer, {0, 800, 100, 100}, Utils::random_color());
+        draw_rectangle(video_buffer, {400, 0, 100, 100}, Utils::random_color());
+        draw_rectangle(video_buffer, {400, 100, 100, 100},
+                       Utils::random_color());
+        draw_rectangle(video_buffer, {400, 900, 100, 100},
+                       Utils::random_color());
+        draw_rectangle(video_buffer, {400, 800, 100, 100},
+                       Utils::random_color());
+        draw_rectangle(video_buffer, {100, 200, 100, 100},
+                       Utils::random_color());
+        draw_rectangle(video_buffer, {100, 300, 100, 100},
+                       Utils::random_color());
+        draw_rectangle(video_buffer, {100, 600, 100, 100},
+                       Utils::random_color());
+        draw_rectangle(video_buffer, {100, 700, 100, 100},
+                       Utils::random_color());
+        draw_rectangle(video_buffer, {300, 600, 100, 100},
+                       Utils::random_color());
+        draw_rectangle(video_buffer, {300, 700, 100, 100},
+                       Utils::random_color());
+        draw_rectangle(video_buffer, {300, 200, 100, 100},
+                       Utils::random_color());
+        draw_rectangle(video_buffer, {300, 200, 100, 100},
+                       Utils::random_color());
+        draw_rectangle(video_buffer, {300, 300, 100, 100},
+                       Utils::random_color());
+        draw_rectangle(video_buffer, {300, 300, 100, 100},
+                       Utils::random_color());
+        draw_rectangle(video_buffer, {200, 400, 100, 100},
+                       Utils::random_color());
+        draw_rectangle(video_buffer, {200, 500, 100, 100},
+                       Utils::random_color());
     }
 
     blit(video_buffer);
@@ -154,9 +192,9 @@ error_type_t Controller::do_process(audio_buffer_t& buffer) {
                                                               ? "🙂"
                                                               : "")))))));
         }
-
-        redraw_screen();
     }
+
+    redraw_screen();
 
     for (auto sample : buffer.data) {
         data->time += data->time_step * data->speed;

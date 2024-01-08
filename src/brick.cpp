@@ -165,9 +165,18 @@ void Brick::move_x(int dir) {
 }
 
 void Brick::fall() {
-    while (!bottom_collides()) {
+    bool can_fall;
+    do {
+        can_fall = move_y();
+    } while (can_fall);
+}
+
+bool Brick::move_y() {
+    if (!bottom_collides()) {
         for (auto& point : points) {
             point.y += data->window.brick_height;
         }
+        return true;
     }
+    return false;
 }

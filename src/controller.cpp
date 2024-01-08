@@ -99,6 +99,7 @@ int Controller::clear_complete_lines() {
     vector<int> line_states = get_lines_state();
     for (auto state : line_states) {
         if (state == data->window.columns) {
+            data->erase_line = true;
             erased += 1;
         }
     }
@@ -212,24 +213,27 @@ bool Controller::do_key_pressed(const int key, bool pressed) {
         }
         case keys::key_a: {
             Brick* active_brick = ensure_active_brick();
+            data->last_move_time = data->time;
             active_brick->rotate();
             break;
         }
+        case KEY_ARROW_UP:
         case KEY_ARROW_DOWN: {
             Brick* active_brick = ensure_active_brick();
-            active_brick->fall();
+            data->last_move_time = data->time;
+            data->fall = true;
+            if (key == KEY_ARROW_DOWN) {
+                active_brick->move_y();
+            } else {
+                active_brick->fall();
+            }
             break;
         }
+        case KEY_ARROW_RIGHT:
         case KEY_ARROW_LEFT: {
             Brick* active_brick = ensure_active_brick();
             data->last_move_time = data->time;
-            active_brick->move_x(-1);
-            break;
-        }
-        case KEY_ARROW_RIGHT: {
-            Brick* active_brick = ensure_active_brick();
-            data->last_move_time = data->time;
-            active_brick->move_x(1);
+            active_brick->move_x(key == KEY_ARROW_LEFT ? -1 : 1);
             break;
         }
     }

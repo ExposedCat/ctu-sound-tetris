@@ -13,7 +13,9 @@ public:
 private:
     double time = 0.0;
     SharedData* data;
-    double frequencies[2] = {732.33, 787.77};
+    double move_frequencies[2] = {300, 600};
+    double fall_frequencies[2] = {150, 200};
+    double erase_frequencies[2] = {200, 350};
 };
 
 #endif

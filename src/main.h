@@ -22,6 +22,7 @@ const double amplitude = numeric_limits<int16_t>::max();
 const int KEY_ARROW_LEFT = 276;
 const int KEY_ARROW_RIGHT = 275;
 const int KEY_ARROW_DOWN = 274;
+const int KEY_ARROW_UP = 273;
 }  // namespace
 
 typedef struct Point {
@@ -49,6 +50,8 @@ typedef struct SharedData {
     WindowData window;
     Score score;
     bool gameover;
+    bool fall;
+    bool erase_line;
     double speed;
     double time;
     double time_step;

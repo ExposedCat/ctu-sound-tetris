@@ -24,6 +24,8 @@ int main(int argc, char** argv) try {
 
     SharedData shared_data;
     shared_data.gameover = false;
+    shared_data.fall = false;
+    shared_data.erase_line = false;
     shared_data.window = window;
     shared_data.time = 0.0;
     shared_data.time_step =

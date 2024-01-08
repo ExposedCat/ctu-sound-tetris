@@ -3,20 +3,33 @@ by [Chipi & Chapa Corp.](https://exposedcat.notion.site/Chipi-Chapa-Corp-Home-f2
 
 ![Gameplay](video/gameplay.gif)
 
-Simple classic Tetris written on C++ using [IIM AV library](https://projects.iim.cz/support:iimavlib). 
+Simple classic Tetris written in C++ using [IIM AV library](https://projects.iim.cz/support:iimavlib). 
 
-All in-game sounds are generated, see `background-sound.cpp` and `brick-sound.cpp` for impementation.
 
-For understanding game logic check out `controller` class.
+## Short Description
+Game generates sounds for all events happening. Speed Level System accelerates not only game, but also all the sounds - bigger score = more intense sounds!
 
+## Project Structure
+- `src` is a main folder dir with all the sources
+- `dependenies` must contain compiled IIMAV library and `includes` dir with its headers
+- `background-sound` and `brick-sound` files manage respective sounds within a game
+- `controller` contains main game logic
+- `utils` contains utilites (e.g. random generator)
+- `brick` represents bricks (tetrominoes) logic
+- `main` is a game entrypoint that combines all the pieces together 
 ## Build and start
-To build the project you can start the BASH script `prepare_linux.sh`
+### via Script
+There is a script that builds & starts the game on Linux:
+`./start-linux.sh`
 
-``./prepare_linux.sh``
-
-To start the app you can run
-
-``./build/main``
+### Manual
+To build the project you can use `cmake`:
+- `mkdir build`
+- `cd build`
+- `cmake ..`
+- `make`
+Then you should be able to start game via
+- `./main`
 
 ## Controls
 - `Q` : Quit app

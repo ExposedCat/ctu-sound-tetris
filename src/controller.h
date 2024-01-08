@@ -16,9 +16,9 @@ class Controller : public SDLDevice, public AudioFilter {
   void redraw_screen();
 
   error_type_t do_process(audio_buffer_t& buffer) override;
-  vector<vector<int>> create_matrix();
-  void check_gameover(vector<vector<int>> filled_points);
-  int check_complete_line(vector<vector<int>> filled_points);
+  void check_gameover();
+  int clear_complete_lines();
+  vector<int> get_lines_state();
   
   Brick* ensure_active_brick();
 

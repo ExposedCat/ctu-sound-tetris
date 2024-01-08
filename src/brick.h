@@ -24,6 +24,7 @@ class Brick {
     void move_x(int dir);
     void freeze();
     void rotate();
+    void fall();
 
    private:
     int form = 0;

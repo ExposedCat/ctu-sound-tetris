@@ -26,63 +26,69 @@ void Controller::redraw_screen() {
     blit(video_buffer);
 };
 
-vector<vector<int>> Controller::create_matrix() {
-    vector<vector<int>> filled_points(data->window.rows,
-                                      vector<int>(data->window.columns, 0));
-    for (auto brick : data->bricks) {
-        if (!brick->active) {
-            for (auto point : brick->points) {
-                int row =
-                    (brick->get_actual_y(point) / data->window.brick_height);
-                int column = point.x / data->window.brick_width;
-                filled_points[row][column] = 1;
-            }
-        }
+void Controller::check_gameover() {
+    vector<int> line_states = get_lines_state();
+    if (line_states[0] == data->window.columns) {
+        data->gameover = true;
+        printf("Game Over!\n");
     }
-    return filled_points;
 }
 
-void Controller::check_gameover(vector<vector<int>> filled_points) {
-    for (auto is_filled : filled_points[0]) {
-        if (is_filled) {
-            printf("Game Over!\n");
-            data->gameover = true;
-        }
-    };
-}
+vector<int> Controller::get_lines_state() {
+    vector<int> line_states = {};
 
-int Controller::check_complete_line(vector<vector<int>> filled_points) {
-    int erased = 0;
+    for (int y = 0; y < data->window.rows; ++y) {
+        line_states.push_back(0);
+    }
 
-    for (int y = 0; y < filled_points.size(); y++) {
-        int filled_number = 0;
-        for (auto is_filled : filled_points[y]) {
-            filled_number += is_filled;
-        };
-        if (filled_number != data->window.columns) {
+    for (auto brick : data->bricks) {
+        if (brick->active) {
             continue;
         }
-        erased += 1;
-        for (auto brick : data->bricks) {
-            if (brick->active) {
-                continue;
-            }
-            for (auto iterator = brick->points.begin();
-                 iterator != brick->points.end();) {
-                auto& point = *iterator;
-                int row =
-                    brick->get_actual_y(point) / data->window.brick_height;
-                if (row == y) {
-                    iterator = brick->points.erase(iterator);
-                } else {
-                    if (row < y) {
-                        point.y += data->window.brick_height;
-                    }
-                    iterator += 1;
-                }
-            }
+        for (auto point : brick->points) {
+            int y = brick->get_actual_y(point);
+            int row = y / data->window.brick_height;
+            line_states[row] += 1;
         }
     }
+
+    return line_states;
+}
+
+int Controller::clear_complete_lines() {
+    int erased = 0;
+
+    vector<int> line_states = get_lines_state();
+    for (auto state : line_states) {
+        if (state == data->window.columns) {
+            erased += 1;
+        }
+    }
+
+    for (auto bit = data->bricks.begin(); bit != data->bricks.end();) {
+        auto& brick = *bit;
+        if (brick->active) {
+            bit += 1;
+            continue;
+        }
+        for (auto it = brick->points.begin(); it != brick->points.end();) {
+            auto& point = *it;
+            int y = brick->get_actual_y(point);
+            int row = y / data->window.brick_height;
+            if (line_states[row] == data->window.columns) {
+                it = brick->points.erase(it);
+            } else {
+                it += 1;
+            }
+        }
+        if (brick->points.size() == 0) {
+            bit = data->bricks.erase(bit);
+            printf("Erased whole brick\n");
+        } else {
+            bit += 1;
+        }
+    }
+
     return erased;
 }
 
@@ -108,13 +114,10 @@ error_type_t Controller::do_process(audio_buffer_t& buffer) {
         return error_type_t::failed;
     }
     if (!data->gameover) {
-        vector<vector<int>> filled_points = create_matrix();
-        int erased_lines = check_complete_line(filled_points);
-        check_gameover(filled_points);
-        // TODO: Move to separate method
-        data->score.points += erased_lines;
-        data->speed += 0.3 * erased_lines;
+        int erased_lines = clear_complete_lines();
         if (erased_lines) {
+            data->score.points += erased_lines;
+            data->speed += 0.3 * erased_lines;
             printf(
                 "[Score] %d -> %d %s\n", data->score.points - erased_lines,
                 data->score.points,
@@ -134,14 +137,14 @@ error_type_t Controller::do_process(audio_buffer_t& buffer) {
                                                               ? "🙂"
                                                               : "")))))));
         }
+
+        check_gameover();
+
         redraw_screen();
     }
 
-    // TODO: Draw Game Over
-
     for (auto sample : buffer.data) {
         data->time += data->time_step * data->speed;
-        ensure_active_brick();
     }
     return error_type_t::ok;
 }

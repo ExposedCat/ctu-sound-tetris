@@ -28,7 +28,7 @@ void Controller::redraw_screen() {
 
 void Controller::check_gameover() {
     vector<int> line_states = get_lines_state();
-    if (line_states[0] == data->window.columns) {
+    if (line_states[0] > 0) {
         data->gameover = true;
         printf("Game Over!\n");
     }
@@ -129,6 +129,8 @@ error_type_t Controller::do_process(audio_buffer_t& buffer) {
         return error_type_t::failed;
     }
     if (!data->gameover) {
+        check_gameover();
+
         int erased_lines = clear_complete_lines();
         if (erased_lines) {
             data->score.points += erased_lines;
@@ -152,8 +154,6 @@ error_type_t Controller::do_process(audio_buffer_t& buffer) {
                                                               ? "🙂"
                                                               : "")))))));
         }
-
-        check_gameover();
 
         redraw_screen();
     }

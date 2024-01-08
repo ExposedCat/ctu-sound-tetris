@@ -20,8 +20,8 @@ const double bit8_amplitude = 255.0 / 2;
 const double amplitude = numeric_limits<int16_t>::max();
 
 const int KEY_ARROW_LEFT = 276;
-
 const int KEY_ARROW_RIGHT = 275;
+const int KEY_ARROW_DOWN = 274;
 }  // namespace
 
 typedef struct Point {

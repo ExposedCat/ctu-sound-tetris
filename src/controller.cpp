@@ -89,6 +89,24 @@ int Controller::clear_complete_lines() {
         }
     }
 
+    while (true) {
+        printf("Falling cycle\n");
+        bool stable = true;
+        for (auto brick : data->bricks) {
+            if (brick->active) {
+                continue;
+            }
+            if (!brick->bottom_collides()) {
+                stable = false;
+                printf("Found unstable brick\n");
+                brick->fall();
+            }
+        }
+        if (stable) {
+            break;
+        }
+    }
+
     return erased;
 }
 
@@ -160,6 +178,11 @@ bool Controller::do_key_pressed(const int key, bool pressed) {
         case keys::key_a: {
             Brick* active_brick = ensure_active_brick();
             active_brick->rotate();
+            break;
+        }
+        case KEY_ARROW_DOWN: {
+            Brick* active_brick = ensure_active_brick();
+            active_brick->fall();
             break;
         }
         case KEY_ARROW_LEFT: {

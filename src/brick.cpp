@@ -7,17 +7,18 @@ const vector<vector<Point>> possible_bricks = {
     {{1, 1}, {-1, 1}, {0, 1}, {2, 1}},   // --
     {{0, 1}, {-1, 0}, {-1, 1}, {1, 1}},  // -^
     {{0, 1}, {1, 0}, {-1, 1}, {1, 1}},   // ^-
-    {{1, 1}, {0, 0}, {1, 0}, {0, 1}},     // Square
-    {{0, 1}, {-1, 1}, {0, 0}, {1, 0}},     // _^-
+    {{1, 1}, {0, 0}, {1, 0}, {0, 1}},    // Square
+    {{0, 1}, {-1, 1}, {0, 0}, {1, 0}},   // _^-
     {{0, 1}, {0, 0}, {-1, 1}, {1, 1}},   // T
-    {{0, 1}, {0, 0}, {-1, 0}, {1, 1}}     // -|_
+    {{0, 1}, {0, 0}, {-1, 0}, {1, 1}}    // -|_
 };
 
 Brick::Brick(SharedData* data) : data(data), creation_time(data->time) {
     // TODO: Add more complicated shapes
     int center = (data->window.columns / 2 - 1) * data->window.brick_width;
 
-    vector<Point> new_points = possible_bricks[Utils::random_int(0, variations - 1)];
+    vector<Point> new_points =
+        possible_bricks[Utils::random_int(0, variations - 1)];
     for (int i = 0; i < 4; ++i) {
         new_points[i].x *= data->window.brick_width;
         new_points[i].x += center;
@@ -71,7 +72,7 @@ void Brick::freeze() {
 
 bool Brick::bottom_collides() {
     for (auto brick : data->bricks) {
-        if (brick->active) {
+        if (brick->active || brick == this) {
             continue;
         }
         for (auto point : brick->points) {
@@ -139,5 +140,13 @@ void Brick::move_x(int dir) {
     for (auto& point : points) {
         int width = data->window.width / data->window.columns;
         point.x += width * dir;
+    }
+}
+
+void Brick::fall() {
+    while (!bottom_collides()) {
+        for (auto& point : points) {
+            point.y += data->window.brick_height;
+        }
     }
 }
